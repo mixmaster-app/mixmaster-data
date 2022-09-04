@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS `character_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_bin NOT NULL,
-  `img_url` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `img_url` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `guild_user` (
 
 -- mixmaster.hench
 CREATE TABLE IF NOT EXISTS `hench` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_bin NOT NULL,
   `img_url` varchar(255) COLLATE utf8mb4_bin NOT NULL,
   `type_id` int(11) NOT NULL,
@@ -42,8 +42,8 @@ CREATE TABLE IF NOT EXISTS `hench` (
   `speed` int(11) DEFAULT NULL,
   `accuracy` int(11) DEFAULT NULL,
   `chance` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
   KEY `hench_type_id_foreign` (`type_id`),
+  KEY `id` (`id`),
   CONSTRAINT `hench_type_id_foreign` FOREIGN KEY (`type_id`) REFERENCES `hench_type` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
@@ -61,8 +61,6 @@ CREATE TABLE IF NOT EXISTS `hench_loots` (
   `zone_id` int(11) NOT NULL,
   KEY `hench_loots_item_id_foreign` (`item_id`),
   KEY `hench_loots_zone_id_foreign` (`zone_id`),
-  KEY `hench_loots_hench_id_foreign` (`hench_id`),
-  CONSTRAINT `hench_loots_hench_id_foreign` FOREIGN KEY (`hench_id`) REFERENCES `hench` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `hench_loots_item_id_foreign` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`),
   CONSTRAINT `hench_loots_zone_id_foreign` FOREIGN KEY (`zone_id`) REFERENCES `zone` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
@@ -72,15 +70,15 @@ CREATE TABLE IF NOT EXISTS `hench_mix` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `hench_result_id` int(11) NOT NULL,
   `hench_left_id` int(11) NOT NULL,
-  `item_left_id` int(11) NOT NULL,
+  `item_left_id` int(11) DEFAULT NULL,
   `hench_right_id` int(11) NOT NULL,
-  `item_right_id` int(11) NOT NULL,
+  `item_right_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `hench_mix_item_right_id_foreign` (`item_right_id`),
+  KEY `hench_mix_item_left_id_foreign` (`item_left_id`),
   KEY `hench_mix_hench_result_id_foreign` (`hench_result_id`),
   KEY `hench_mix_hench_left_id_foreign` (`hench_left_id`),
   KEY `hench_mix_hench_right_id_foreign` (`hench_right_id`),
-  KEY `hench_mix_item_right_id_foreign` (`item_right_id`),
-  KEY `hench_mix_item_left_id_foreign` (`item_left_id`),
   CONSTRAINT `hench_mix_hench_left_id_foreign` FOREIGN KEY (`hench_left_id`) REFERENCES `hench` (`id`),
   CONSTRAINT `hench_mix_hench_result_id_foreign` FOREIGN KEY (`hench_result_id`) REFERENCES `hench` (`id`),
   CONSTRAINT `hench_mix_hench_right_id_foreign` FOREIGN KEY (`hench_right_id`) REFERENCES `hench` (`id`),
@@ -99,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `hench_nature` (
 CREATE TABLE IF NOT EXISTS `hench_type` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_bin NOT NULL,
-  `weakness_type_id` int(11) NOT NULL,
+  `weakness_type_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `hench_type_weakness_type_id_foreign` (`weakness_type_id`),
   CONSTRAINT `hench_type_weakness_type_id_foreign` FOREIGN KEY (`weakness_type_id`) REFERENCES `hench_type` (`id`)
@@ -119,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `hench_zone` (
 CREATE TABLE IF NOT EXISTS `item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_bin NOT NULL,
-  `description` text COLLATE utf8mb4_bin NOT NULL,
+  `description` text COLLATE utf8mb4_bin,
   `item_category_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_item_item_category` (`item_category_id`),
@@ -163,9 +161,9 @@ CREATE TABLE IF NOT EXISTS `user_hench` (
   `hench_nature_id` int(11) NOT NULL,
   `gender_id` int(11) NOT NULL,
   PRIMARY KEY (`user_id`),
-  KEY `user_hench_hench_id_foreign` (`hench_id`),
   KEY `user_hench_hench_nature_id_foreign` (`hench_nature_id`),
   KEY `user_hench_gender_id_foreign` (`gender_id`),
+  KEY `user_hench_hench_id_foreign` (`hench_id`),
   CONSTRAINT `user_hench_gender_id_foreign` FOREIGN KEY (`gender_id`) REFERENCES `hench_gender` (`id`),
   CONSTRAINT `user_hench_hench_id_foreign` FOREIGN KEY (`hench_id`) REFERENCES `hench` (`id`),
   CONSTRAINT `user_hench_hench_nature_id_foreign` FOREIGN KEY (`hench_nature_id`) REFERENCES `hench_nature` (`id`)
