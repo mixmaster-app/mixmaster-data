@@ -131,14 +131,14 @@ CREATE TABLE IF NOT EXISTS `item_category` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
--- mixmaster.item_user
-CREATE TABLE IF NOT EXISTS `item_user` (
+-- mixmaster.user_item
+CREATE TABLE IF NOT EXISTS `user_item` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
   PRIMARY KEY (`user_id`),
-  KEY `item_user_item_id_foreign` (`item_id`),
-  CONSTRAINT `item_user_item_id_foreign` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`)
+  KEY `user_item_item_id_foreign` (`item_id`),
+  CONSTRAINT `user_item_item_id_foreign` FOREIGN KEY (`item_id`) REFERENCES `item` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- mixmaster.user
